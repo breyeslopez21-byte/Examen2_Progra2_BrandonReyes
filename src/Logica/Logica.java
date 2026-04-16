@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Logica {
 
-    private Logica dao = new Logica();
+   private Datos dao = new Datos();
 
     private double tarifaHora = 500;
 
