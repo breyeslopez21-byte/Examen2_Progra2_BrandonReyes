@@ -13,116 +13,158 @@ public class Appa extends JFrame {
     Logica logica = new Logica();
 
     JTextField txtPlaca = new JTextField();
-    JTextField txtTipo = new JTextField();
+
+    JComboBox<String> comboTipo = new JComboBox<>(new String[]{"Moto","Carro"});
 
     JButton btnIngreso = new JButton("Registrar Ingreso");
     JButton btnSalida = new JButton("Registrar Salida");
 
-    JTable tabla = new JTable();
-    DefaultTableModel modelo;
+    JLabel lblMonto = new JLabel("Monto a pagar: 0");
 
-    public Appa() {
+    JTable tablaActivos = new JTable();
+    JTable tablaHistorial = new JTable();
 
-        setTitle("Sistema de Parqueo");
-        setSize(800,500);
+    DefaultTableModel modeloActivos;
+    DefaultTableModel modeloHistorial;
+
+    public Appa(){
+
+        setTitle("Administración de Parqueo");
+        setSize(900,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // PANEL DE DATOS
-        JPanel panelDatos = new JPanel(new GridLayout(2,2,10,10));
+        JPanel panelDatos = new JPanel(new GridLayout(2,2));
 
-        panelDatos.add(new JLabel("Placa:"));
+        panelDatos.add(new JLabel("Placa"));
         panelDatos.add(txtPlaca);
 
-        panelDatos.add(new JLabel("Tipo de Vehículo:"));
-        panelDatos.add(txtTipo);
+        panelDatos.add(new JLabel("Tipo"));
+        panelDatos.add(comboTipo);
 
-        // PANEL DE BOTONES
         JPanel panelBotones = new JPanel();
 
         panelBotones.add(btnIngreso);
         panelBotones.add(btnSalida);
+        panelBotones.add(lblMonto);
 
-        // PANEL SUPERIOR
         JPanel panelSuperior = new JPanel(new BorderLayout());
+
         panelSuperior.add(panelDatos,BorderLayout.NORTH);
         panelSuperior.add(panelBotones,BorderLayout.SOUTH);
 
-        // TABLA
-        JScrollPane scroll = new JScrollPane(tabla);
-
         add(panelSuperior,BorderLayout.NORTH);
-        add(scroll,BorderLayout.CENTER);
 
-        cargarTabla();
+        JPanel panelTablas = new JPanel(new GridLayout(2,1));
+
+        panelTablas.add(new JScrollPane(tablaActivos));
+        panelTablas.add(new JScrollPane(tablaHistorial));
+
+        add(panelTablas,BorderLayout.CENTER);
+
+        inicializarTablas();
+        cargarTablas();
 
         btnIngreso.addActionListener(e -> registrarIngreso());
         btnSalida.addActionListener(e -> registrarSalida());
     }
 
-    private void cargarTabla() {
+    private void inicializarTablas(){
 
-        modelo = new DefaultTableModel();
+        modeloActivos = new DefaultTableModel();
 
-        modelo.addColumn("Placa");
-        modelo.addColumn("Tipo");
-        modelo.addColumn("Hora Entrada");
-        modelo.addColumn("Hora Salida");
-        modelo.addColumn("Monto");
+        modeloActivos.addColumn("Placa");
+        modeloActivos.addColumn("Tipo");
+        modeloActivos.addColumn("Hora Entrada");
 
-        tabla.setModel(modelo);
+        tablaActivos.setModel(modeloActivos);
+
+        modeloHistorial = new DefaultTableModel();
+
+        modeloHistorial.addColumn("Placa");
+        modeloHistorial.addColumn("Tipo");
+        modeloHistorial.addColumn("Hora Entrada");
+        modeloHistorial.addColumn("Hora Salida");
+        modeloHistorial.addColumn("Monto");
+
+        tablaHistorial.setModel(modeloHistorial);
+    }
+
+    private void cargarTablas(){
+
+        modeloActivos.setRowCount(0);
+        modeloHistorial.setRowCount(0);
 
         List<Vehiculos> lista = logica.obtenerVehiculos();
 
-        for (Vehiculos v : lista) {
+        for(Vehiculos v : lista){
 
-            Object[] fila = new Object[5];
+            if(v.getHoraSalida() == null){
 
-            fila[0] = v.getPlaca();
-            fila[1] = v.getTipo();
-            fila[2] = v.getHoraEntrada();
-            fila[3] = v.getHoraSalida();
-            fila[4] = v.getMonto();
+                Object[] fila = new Object[3];
 
-            modelo.addRow(fila);
+                fila[0] = v.getPlaca();
+                fila[1] = v.getTipo();
+                fila[2] = v.getHoraEntrada();
+
+                modeloActivos.addRow(fila);
+            }
+            else{
+
+                Object[] fila = new Object[5];
+
+                fila[0] = v.getPlaca();
+                fila[1] = v.getTipo();
+                fila[2] = v.getHoraEntrada();
+                fila[3] = v.getHoraSalida();
+                fila[4] = v.getMonto();
+
+                modeloHistorial.addRow(fila);
+            }
         }
     }
 
-    private void registrarIngreso() {
+    private void registrarIngreso(){
 
-        try {
+        try{
 
             String placa = txtPlaca.getText();
-            String tipo = txtTipo.getText();
+            String tipo = comboTipo.getSelectedItem().toString();
 
             logica.registrarIngreso(placa,tipo);
 
-            cargarTabla();
+            cargarTablas();
 
             txtPlaca.setText("");
-            txtTipo.setText("");
 
-        } catch (Exception e) {
+        }catch(Exception e){
 
-            System.out.println(e.getMessage());
+            lblMonto.setText(e.getMessage());
         }
     }
 
-    private void registrarSalida() {
+    private void registrarSalida(){
 
-        try {
+        int fila = tablaActivos.getSelectedRow();
 
-            String placa = txtPlaca.getText();
+        if(fila == -1){
+            lblMonto.setText("Seleccione un vehículo activo");
+            return;
+        }
 
-            logica.registrarSalida(placa);
+        String placa = tablaActivos.getValueAt(fila,0).toString();
 
-            cargarTabla();
+        try{
 
-            txtPlaca.setText("");
+            double monto = logica.registrarSalida(placa);
 
-        } catch (Exception e) {
+            lblMonto.setText("Monto a pagar: " + monto);
 
-            System.out.println(e.getMessage());
+            cargarTablas();
+
+        }catch(Exception e){
+
+            lblMonto.setText(e.getMessage());
         }
     }
 }

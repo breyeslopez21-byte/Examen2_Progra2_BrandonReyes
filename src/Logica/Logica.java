@@ -72,12 +72,20 @@ public class Logica {
             if (v.getPlaca().equalsIgnoreCase(placa) && v.getHoraSalida() == null) {
 
                 LocalDateTime salida = LocalDateTime.now();
+long minutos = Duration.between(v.getHoraEntrada(), salida).toMinutes();
 
-                long minutos = Duration.between(v.getHoraEntrada(), salida).toMinutes();
+double horas = Math.ceil(minutos / 60.0);
 
-                double horas = Math.ceil(minutos / 60.0);
+double tarifa;
 
-                double monto = horas * tarifaHora;
+if(v.getTipo().equalsIgnoreCase("Moto")){
+    tarifa = 500;
+}
+else{
+    tarifa = 1000;
+}
+
+double monto = horas * tarifa;
 
                 v.setHoraSalida(salida);
                 v.setMonto(monto);
