@@ -1,0 +1,24 @@
+Registro de Interacción con Asistencia de IA
+Desarrollo de Sistema de Administración de Parqueo en Java
+
+Durante el desarrollo del proyecto se utilizó asistencia de inteligencia artificial para apoyar el diseño, implementación y documentación de un sistema básico de administración de parqueo desarrollado en Java utilizando NetBeans. A continuación se resume la interacción realizada, incluyendo la reformulación técnica de las solicitudes realizadas y una síntesis de las respuestas obtenidas.
+
+Inicialmente se solicitó el diseño e implementación de un sistema de administración de parqueo que permitiera registrar el ingreso y salida de vehículos, incluyendo datos como placa, tipo de vehículo, hora de entrada, hora de salida y monto a pagar. Además, se establecieron reglas de negocio obligatorias como el control de unicidad de placas activas dentro del parqueo, el cálculo del cobro según la diferencia entre la hora de entrada y salida, y la validación de datos obligatorios. También se definieron requisitos técnicos específicos como la utilización de arquitectura en capas (Entidades, Acceso a Datos, Lógica de Negocio y Presentación), el uso de interfaces gráficas Swing y la persistencia de datos mediante un archivo de texto .txt sin redundancia de información.
+
+Como respuesta, se propuso una estructura del sistema organizada en cuatro capas principales. La capa Entidades contiene la clase que representa el modelo de datos del vehículo. La capa Datos se encarga de la lectura y escritura del archivo de almacenamiento. La capa Lógica implementa las reglas del negocio, incluyendo validaciones, control de placas activas y cálculo del monto a pagar. Finalmente, la capa Presentación se implementa mediante Swing (JFrame, JTable, formularios y botones) para permitir la interacción con el usuario.
+
+Posteriormente se realizaron consultas sobre la implementación de métodos en la capa lógica, específicamente si debía existir un método encargado de leer los registros almacenados. Se aclaró que la lectura del archivo corresponde a la capa de datos, mientras que la capa lógica únicamente debe invocar dichos métodos para procesar la información.
+
+En una etapa posterior se revisó código implementado para las capas de Lógica y Datos, donde se identificó un problema en la instanciación de objetos dentro de la clase de lógica. Se indicó que la clase lógica debía instanciar la clase de acceso a datos y no a sí misma, con el fin de respetar la arquitectura por capas.
+
+Posteriormente se solicitó la creación de una clase main para iniciar la aplicación, manteniendo la estructura del proyecto. Se indicó que debía crearse una clase dentro del paquete principal que instanciara la ventana principal del sistema.
+
+Durante la implementación de la interfaz gráfica se presentaron dudas sobre el uso de JFrame en NetBeans y la ubicación del código dentro del diseñador gráfico. Se explicó que el código debía integrarse dentro del constructor de la clase después del método initComponents(), además de implementarse en los eventos de los botones.
+
+Posteriormente se realizaron ajustes para simplificar la implementación de la interfaz, proporcionando métodos completos para copiar y pegar en la clase de presentación. También se explicó cómo cargar los datos en una tabla utilizando DefaultTableModel y JTable.
+
+En etapas posteriores se realizaron mejoras funcionales, incluyendo la implementación de tarifas diferenciadas según el tipo de vehículo, estableciendo un costo de ₡500 por hora para motocicletas y ₡1000 por hora para automóviles. También se corrigieron problemas relacionados con el registro de salida de vehículos y la actualización de la información almacenada en el archivo.
+
+Finalmente se solicitó la generación de documentación para el proyecto, incluyendo un archivo README para GitHub, así como un resumen técnico de la interacción completa con la inteligencia artificial, el cual permitió documentar el proceso de desarrollo y las decisiones tomadas durante la implementación del sistema.
+
+Este proceso permitió estructurar el sistema de forma progresiva, manteniendo la separación de responsabilidades entre capas, aplicando principios de programación orientada a objetos y facilitando la construcción de una interfaz gráfica funcional para la administración del parqueo.
